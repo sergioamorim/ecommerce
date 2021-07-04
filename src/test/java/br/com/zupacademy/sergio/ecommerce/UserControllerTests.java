@@ -17,10 +17,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -64,8 +65,8 @@ public class UserControllerTests {
           .contentType(MediaType.APPLICATION_JSON)
           .content("{ }")
       )
-      .andExpect(status().isBadRequest())
-      .andExpect(content().string(""));
+      .andExpect(status().isBadRequest());
+
   }
 
   @ParameterizedTest
@@ -85,8 +86,7 @@ public class UserControllerTests {
           .contentType(MediaType.APPLICATION_JSON)
           .content(this.gson.toJson(userRequest))
       )
-      .andExpect(status().isBadRequest())
-      .andExpect(content().string(""));
+      .andExpect(status().isBadRequest());
     assertTrue(this.userRepository.findByEmail(email).isEmpty());
   }
 
@@ -111,8 +111,7 @@ public class UserControllerTests {
           .contentType(MediaType.APPLICATION_JSON)
           .content(this.gson.toJson(userRequest))
       )
-      .andExpect(status().isBadRequest())
-      .andExpect(content().string(""));
+      .andExpect(status().isBadRequest());
     assertTrue(this.userRepository.findByEmail(email).isEmpty());
   }
 
@@ -126,7 +125,7 @@ public class UserControllerTests {
     this.mockMvc
       .perform(
         post(this.urlTemplate)
-          .contentType("application/json")
+          .contentType(MediaType.APPLICATION_JSON)
           .content(this.gson.toJson(userRequest))
       )
       .andExpect(status().isOk());
@@ -138,5 +137,40 @@ public class UserControllerTests {
     assertTrue(BCrypt.checkpw(password, user.getPassword()));
 
     assertTrue(user.getCreation().isBefore(ZonedDateTime.now()));
+  }
+
+  @Test
+  @DisplayName("Should not create a user with duplicate email")
+  void shouldNotCreateAUserWithDuplicateEmail() throws Exception {
+
+    String email = "duplicate@email.com";
+    UserRequest userRequestA = new UserRequest(email, "123456");
+
+    this.mockMvc
+      .perform(
+        post(this.urlTemplate)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(this.gson.toJson(userRequestA))
+      )
+    ;
+
+    UserRequest userRequestB = new UserRequest(email, "654321");
+
+    this.mockMvc
+      .perform(
+        post(this.urlTemplate)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(this.gson.toJson(userRequestB))
+      )
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.*", hasSize(1)))
+      .andExpect(jsonPath("fieldErrors", hasSize(1)))
+      .andExpect(jsonPath("fieldErrors[0].*", hasSize(2)))
+      .andExpect(jsonPath("fieldErrors[0].name").value("email"))
+      .andExpect(jsonPath("fieldErrors[0].message").isString())
+      .andExpect(jsonPath("fieldErrors[0].message").isNotEmpty());
+
+    assertEquals(1, this.userRepository.countByEmail(email));
   }
 }

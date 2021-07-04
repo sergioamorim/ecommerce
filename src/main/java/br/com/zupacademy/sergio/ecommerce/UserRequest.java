@@ -10,6 +10,7 @@ public class UserRequest {
 
   @Email
   @NotEmpty
+  @UniqueValue(domainClass = User.class, fieldName = "email")
   private final String email;
 
   @NotBlank
