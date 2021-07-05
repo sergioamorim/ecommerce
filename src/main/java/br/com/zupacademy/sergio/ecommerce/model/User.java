@@ -1,5 +1,6 @@
-package br.com.zupacademy.sergio.ecommerce;
+package br.com.zupacademy.sergio.ecommerce.model;
 
+import br.com.zupacademy.sergio.ecommerce.model.dto.ClearPassword;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 

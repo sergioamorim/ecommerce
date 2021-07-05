@@ -1,4 +1,4 @@
-package br.com.zupacademy.sergio.ecommerce;
+package br.com.zupacademy.sergio.ecommerce.validation;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

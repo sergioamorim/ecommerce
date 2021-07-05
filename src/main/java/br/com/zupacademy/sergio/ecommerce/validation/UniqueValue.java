@@ -1,4 +1,4 @@
-package br.com.zupacademy.sergio.ecommerce;
+package br.com.zupacademy.sergio.ecommerce.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

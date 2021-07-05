@@ -1,4 +1,4 @@
-package br.com.zupacademy.sergio.ecommerce;
+package br.com.zupacademy.sergio.ecommerce.model.dto;
 
 public class ClearPassword {
   private final String clearPassword;

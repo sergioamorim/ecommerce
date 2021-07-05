@@ -1,4 +1,4 @@
-package br.com.zupacademy.sergio.ecommerce;
+package br.com.zupacademy.sergio.ecommerce.validation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.validation.FieldError;

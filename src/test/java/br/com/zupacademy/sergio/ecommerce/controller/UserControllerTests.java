@@ -1,5 +1,8 @@
-package br.com.zupacademy.sergio.ecommerce;
+package br.com.zupacademy.sergio.ecommerce.controller;
 
+import br.com.zupacademy.sergio.ecommerce.model.User;
+import br.com.zupacademy.sergio.ecommerce.model.dto.UserRequest;
+import br.com.zupacademy.sergio.ecommerce.repository.UserRepository;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

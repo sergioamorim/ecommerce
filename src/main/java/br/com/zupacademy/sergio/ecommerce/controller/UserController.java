@@ -1,5 +1,7 @@
-package br.com.zupacademy.sergio.ecommerce;
+package br.com.zupacademy.sergio.ecommerce.controller;
 
+import br.com.zupacademy.sergio.ecommerce.model.dto.UserRequest;
+import br.com.zupacademy.sergio.ecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
