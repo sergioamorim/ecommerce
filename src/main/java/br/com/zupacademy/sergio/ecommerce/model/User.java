@@ -32,7 +32,7 @@ public class User {
   }
 
   @Deprecated  // jpa
-  public User() {
+  protected User() {
   }
 
   public String getPassword() {
