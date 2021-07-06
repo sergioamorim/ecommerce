@@ -1,6 +1,7 @@
 package br.com.zupacademy.sergio.ecommerce.model.dto;
 
 import br.com.zupacademy.sergio.ecommerce.model.User;
+import br.com.zupacademy.sergio.ecommerce.security.PasswordEncoding;
 import br.com.zupacademy.sergio.ecommerce.validation.UniqueValue;
 import org.hibernate.validator.constraints.Length;
 
@@ -24,7 +25,10 @@ public class UserRequest {
     this.password = password;
   }
 
-  public User toUser() {
-    return new User(this.email, new ClearPassword(this.password));
+  public User toUser(PasswordEncoding passwordEncoding) {
+    return new User(
+      this.email,
+      new EncodedPassword(passwordEncoding.encode(this.password))
+    );
   }
 }

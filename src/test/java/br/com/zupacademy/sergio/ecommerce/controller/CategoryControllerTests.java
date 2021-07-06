@@ -1,8 +1,14 @@
 package br.com.zupacademy.sergio.ecommerce.controller;
 
 import br.com.zupacademy.sergio.ecommerce.model.Category;
+import br.com.zupacademy.sergio.ecommerce.model.User;
 import br.com.zupacademy.sergio.ecommerce.model.dto.CategoryDto;
+import br.com.zupacademy.sergio.ecommerce.model.dto.EncodedPassword;
 import br.com.zupacademy.sergio.ecommerce.repository.CategoryRepository;
+import br.com.zupacademy.sergio.ecommerce.repository.UserRepository;
+import br.com.zupacademy.sergio.ecommerce.security.AccountCredentials;
+import br.com.zupacademy.sergio.ecommerce.security.JwtConfiguration;
+import br.com.zupacademy.sergio.ecommerce.security.PasswordEncoding;
 import com.google.gson.Gson;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -22,27 +28,56 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Optional;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class CategoryControllerTests {
 
   private final CategoryRepository categoryRepository;
   private final MockMvc mockMvc;
-  private final Gson gson;
+  private final JwtConfiguration jwtConfiguration;
+  private final Gson gson = new Gson();
+
   private final String urlTemplate = "/categories";
+  private String tokenWithPrefix;
 
   @Autowired
   public CategoryControllerTests(
-    CategoryRepository categoryRepository, MockMvc mockMvc, Gson gson
+    CategoryRepository categoryRepository,
+    MockMvc mockMvc,
+    JwtConfiguration jwtConfiguration
   ) {
     this.categoryRepository = categoryRepository;
     this.mockMvc = mockMvc;
-    this.gson = gson;
+    this.jwtConfiguration = jwtConfiguration;
+
   }
 
   @BeforeEach
-  void setUp() {
+  void setUp(
+    @Autowired UserRepository userRepository,
+    @Autowired PasswordEncoding passwordEncoding
+  ) throws Exception {
     this.categoryRepository.deleteAll();
+
+    AccountCredentials accountCredentials = new AccountCredentials(
+      "a@be.co", "123456"
+    );
+
+    userRepository.deleteAll();
+    userRepository.save(
+      new User(
+        accountCredentials.getUsername(),
+        new EncodedPassword(
+          passwordEncoding.encode(accountCredentials.getPassword())
+        )
+      )
+    );
+
+    this.tokenWithPrefix = this.mockMvc.perform(
+      post("/auth").content(this.gson.toJson(accountCredentials))
+    ).andReturn().getResponse().getHeader(this.jwtConfiguration.getHeader());
   }
 
   @Test
@@ -53,6 +88,7 @@ public class CategoryControllerTests {
       .perform(
         MockMvcRequestBuilders
           .post(this.urlTemplate)
+          .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
           .content("{ }")
       )
@@ -79,6 +115,7 @@ public class CategoryControllerTests {
       .perform(
         MockMvcRequestBuilders
           .post(this.urlTemplate)
+          .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
           .content(this.gson.toJson(categoryDto))
       )
@@ -104,6 +141,7 @@ public class CategoryControllerTests {
       .perform(
         MockMvcRequestBuilders
           .post(this.urlTemplate)
+          .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
           .content(this.gson.toJson(categoryDto))
       )
@@ -127,6 +165,7 @@ public class CategoryControllerTests {
       .perform(
         MockMvcRequestBuilders
           .post(this.urlTemplate)
+          .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
           .content(this.gson.toJson(categoryDto))
       )
@@ -153,6 +192,7 @@ public class CategoryControllerTests {
       .perform(
         MockMvcRequestBuilders
           .post(this.urlTemplate)
+          .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
           .content(this.gson.toJson(categoryDto))
       )
@@ -180,6 +220,7 @@ public class CategoryControllerTests {
       .perform(
         MockMvcRequestBuilders
           .post(this.urlTemplate)
+          .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
           .content(this.gson.toJson(categoryDto))
       )
@@ -193,6 +234,24 @@ public class CategoryControllerTests {
       .andExpect(MockMvcResultMatchers.jsonPath("fieldErrors[0].message").isNotEmpty());
 
     Assertions.assertEquals(1, this.categoryRepository.countByName(name));
+  }
+
+  @Test
+  @DisplayName("Should return forbidden when JWT authorization token is not sent")
+  void shouldReturnForbiddenWhenJwtAuthorizationTokenIsNotSent() throws Exception {
+    String name = "category 234892ji";
+    CategoryDto categoryDto = new CategoryDto(name, null);
+
+    this.mockMvc
+      .perform(
+        MockMvcRequestBuilders
+          .post(this.urlTemplate)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(this.gson.toJson(categoryDto))
+      )
+      .andExpect(MockMvcResultMatchers.status().isForbidden());
+
+    Assertions.assertEquals(0, this.categoryRepository.countByName(name));
   }
 
 }

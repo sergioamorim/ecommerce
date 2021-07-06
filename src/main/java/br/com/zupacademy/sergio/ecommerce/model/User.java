@@ -1,8 +1,7 @@
 package br.com.zupacademy.sergio.ecommerce.model;
 
-import br.com.zupacademy.sergio.ecommerce.model.dto.ClearPassword;
+import br.com.zupacademy.sergio.ecommerce.model.dto.EncodedPassword;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,9 +25,9 @@ public class User {
   @CreationTimestamp
   private ZonedDateTime creation;
 
-  public User(String email, ClearPassword clearPassword) {
+  public User(String email, EncodedPassword encodedPassword) {
     this.email = email;
-    this.password = BCrypt.hashpw(clearPassword.get(), BCrypt.gensalt());
+    this.password = encodedPassword.get();
   }
 
   @Deprecated  // jpa

@@ -30,18 +30,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class UserControllerTests {
 
-  private final Gson gson;
   private final MockMvc mockMvc;
   private final UserRepository userRepository;
+
   private final String urlTemplate = "/users";
+
+  private final Gson gson = new Gson();
 
   @Autowired
   public UserControllerTests(
-    Gson gson,
     MockMvc mockMvc,
     UserRepository userRepository
   ) {
-    this.gson = gson;
     this.mockMvc = mockMvc;
     this.userRepository = userRepository;
   }
