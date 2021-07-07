@@ -5,6 +5,7 @@ import br.com.zupacademy.sergio.ecommerce.model.User;
 import br.com.zupacademy.sergio.ecommerce.model.dto.CategoryDto;
 import br.com.zupacademy.sergio.ecommerce.model.dto.EncodedPassword;
 import br.com.zupacademy.sergio.ecommerce.repository.CategoryRepository;
+import br.com.zupacademy.sergio.ecommerce.repository.ProductRepository;
 import br.com.zupacademy.sergio.ecommerce.repository.UserRepository;
 import br.com.zupacademy.sergio.ecommerce.security.AccountCredentials;
 import br.com.zupacademy.sergio.ecommerce.security.JwtConfiguration;
@@ -57,8 +58,10 @@ public class CategoryControllerTests {
   @BeforeEach
   void setUp(
     @Autowired UserRepository userRepository,
-    @Autowired PasswordEncoding passwordEncoding
+    @Autowired PasswordEncoding passwordEncoding,
+    @Autowired ProductRepository productRepository
   ) throws Exception {
+    productRepository.deleteAll();
     this.categoryRepository.deleteAll();
 
     AccountCredentials accountCredentials = new AccountCredentials(

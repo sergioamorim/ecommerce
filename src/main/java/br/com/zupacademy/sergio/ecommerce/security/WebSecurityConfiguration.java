@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 @Component
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -43,7 +45,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       .addFilterBefore(
         new JwtAuthorizationFilter(this.jwtAuthenticationService),
         UsernamePasswordAuthenticationFilter.class
-      );
+      )
+      .sessionManagement().sessionCreationPolicy(STATELESS);
   }
 
   @Override
