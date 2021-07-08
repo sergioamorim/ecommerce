@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 
 @Entity
@@ -29,8 +30,11 @@ public class Product {
   @Column(nullable = false)
   private Integer availableQuantity;
 
-  @OneToMany(fetch = EAGER)
+  @OneToMany(cascade = ALL, fetch = EAGER)
   private Set<ProductProperty> productProperties;
+
+  @OneToMany(cascade = ALL, fetch = EAGER, mappedBy = "product")
+  private Set<Image> images;
 
   @Column(nullable = false, length = 1000)
   private String description;
@@ -88,6 +92,10 @@ public class Product {
     return this.productProperties;
   }
 
+  public Collection<Image> getImages() {
+    return this.images;
+  }
+
   public String getDescription() {
     return this.description;
   }
@@ -98,5 +106,9 @@ public class Product {
 
   public ZonedDateTime getCreation() {
     return this.creation;
+  }
+
+  public boolean isOwnedBy(User user) {
+    return this.getUserId().equals(user.getId());
   }
 }

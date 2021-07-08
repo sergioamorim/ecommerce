@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 @RestControllerAdvice
 public class ControllersExceptionHandler {
 
@@ -17,6 +19,17 @@ public class ControllersExceptionHandler {
 
     return new ValidationErrorsDto(
       methodArgumentNotValidException.getFieldErrors()
+    );
+  }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ValidationErrorsDto handleConstraintViolationException(
+    ConstraintViolationException constraintViolationException
+  ) {
+
+    return new ValidationErrorsDto(
+      constraintViolationException.getConstraintViolations()
     );
   }
 
