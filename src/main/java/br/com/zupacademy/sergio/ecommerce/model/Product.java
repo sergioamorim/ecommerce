@@ -76,6 +76,10 @@ public class Product {
     return this.user.getId();
   }
 
+  public String getUserEmail() {
+    return this.user.getEmail();
+  }
+
   public String getName() {
     return this.name;
   }
