@@ -34,7 +34,7 @@ public class CategoryDto {
   public Category toCategory(CategoryRepository categoryRepository) {
     if (null != this.parentId) {
       return new Category(
-        this.name, categoryRepository.findById(this.parentId).get()
+        this.name, categoryRepository.findById(this.parentId).orElseThrow()  // ForeignKeyExists validation shall guarantee this exists
       );
     }
     return new Category(this.name);

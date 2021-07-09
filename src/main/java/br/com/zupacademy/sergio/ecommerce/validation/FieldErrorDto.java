@@ -20,7 +20,7 @@ public class FieldErrorDto {
       .getLeafNode().getName();
 
     this.message = constraintViolation.getMessage()
-      + "(" + constraintViolation.getInvalidValue() + ")";
+      + " (" + constraintViolation.getInvalidValue() + ")";
   }
 
   public String getName() {

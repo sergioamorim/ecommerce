@@ -96,7 +96,7 @@ public class ProductRequest {
         )
         .collect(Collectors.toSet()),
       this.description,
-      categoryRepository.findById(this.categoryId).get()
+      categoryRepository.findById(this.categoryId).orElseThrow()  // ForeignKeyExists validation shall guarantee this exists
     );
   }
 

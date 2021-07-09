@@ -1,5 +1,6 @@
 package br.com.zupacademy.sergio.ecommerce.security;
 
+import br.com.zupacademy.sergio.ecommerce.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -19,10 +20,15 @@ import java.util.Date;
 @Service
 public class JwtAuthenticationService {
   private final JwtConfiguration jwtConfiguration;
+  private final UserRepository userRepository;
 
   @Autowired
-  public JwtAuthenticationService(JwtConfiguration jwtConfiguration) {
+  public JwtAuthenticationService(
+    JwtConfiguration jwtConfiguration,
+    UserRepository userRepository
+  ) {
     this.jwtConfiguration = jwtConfiguration;
+    this.userRepository = userRepository;
   }
 
   private static String userNameFromTokenWithVerifier(
@@ -55,7 +61,9 @@ public class JwtAuthenticationService {
   private Authentication authenticationForUsername(String username) {
     if (username != null) {
       return new UsernamePasswordAuthenticationToken(
-        username, null, Collections.emptyList()
+        this.userRepository.findByEmail(username).orElse(null),
+        null,
+        Collections.emptyList()
       );
     }
     return null;
