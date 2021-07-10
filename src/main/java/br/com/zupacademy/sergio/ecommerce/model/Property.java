@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class ProductProperty {
+public class Property {
 
   @Id
   @GeneratedValue
@@ -18,13 +18,13 @@ public class ProductProperty {
   @Column(nullable = false)
   private String description;
 
-  public ProductProperty(String name, String description) {
+  public Property(String name, String description) {
     this.name = name;
     this.description = description;
   }
 
   @Deprecated  // jpa
-  protected ProductProperty() {
+  protected Property() {
   }
 
   public String getName() {

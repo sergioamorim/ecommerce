@@ -2,7 +2,7 @@ package br.com.zupacademy.sergio.ecommerce.controller;
 
 import br.com.zupacademy.sergio.ecommerce.model.*;
 import br.com.zupacademy.sergio.ecommerce.model.dto.EncodedPassword;
-import br.com.zupacademy.sergio.ecommerce.model.dto.QuestionDto;
+import br.com.zupacademy.sergio.ecommerce.model.dto.QuestionRequest;
 import br.com.zupacademy.sergio.ecommerce.repository.CategoryRepository;
 import br.com.zupacademy.sergio.ecommerce.repository.ProductRepository;
 import br.com.zupacademy.sergio.ecommerce.repository.QuestionRepository;
@@ -27,7 +27,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 import static br.com.zupacademy.sergio.ecommerce.MailComposer.composedEmailMessageFromQuestion;
 import static org.hamcrest.Matchers.hasSize;
@@ -83,10 +82,10 @@ public class QuestionControllerTests {
       "name",
       BigDecimal.ONE,
       1,
-      Set.of(
-        new ProductProperty("property a", "description"),
-        new ProductProperty("property b", "description"),
-        new ProductProperty("property c", "description")
+      List.of(
+        new Property("property a", "description"),
+        new Property("property b", "description"),
+        new Property("property c", "description")
       ),
       "description",
       categoryRepository.save(new Category("category"))
@@ -113,7 +112,7 @@ public class QuestionControllerTests {
   void shouldReturnOkAndTheQuestionPersistedWhenTheRequestIsValid(
   ) throws Exception {
 
-    QuestionDto questionDto = new QuestionDto("title");
+    QuestionRequest questionRequest = new QuestionRequest("title");
 
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     System.setOut(new PrintStream(byteArrayOutputStream));
@@ -123,11 +122,11 @@ public class QuestionControllerTests {
         post("/products/" + this.productId + "/questions")
           .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
-          .content(this.gson.toJson(questionDto))
+          .content(this.gson.toJson(questionRequest))
       )
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(content().json(this.gson.toJson(questionDto)))
+      .andExpect(content().json(this.gson.toJson(questionRequest)))
     ;
 
     List<Question> questions = this.questionRepository.findAll();
@@ -151,7 +150,7 @@ public class QuestionControllerTests {
         post("/products/" + this.productId + "/questions")
           .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
-          .content(this.gson.toJson(new QuestionDto(title)))
+          .content(this.gson.toJson(new QuestionRequest(title)))
       )
       .andExpect(status().isBadRequest())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -173,7 +172,7 @@ public class QuestionControllerTests {
         post("/products/999/questions")
           .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
-          .content(this.gson.toJson(new QuestionDto("title")))
+          .content(this.gson.toJson(new QuestionRequest("title")))
       )
       .andExpect(status().isBadRequest())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -194,7 +193,7 @@ public class QuestionControllerTests {
       .perform(
         post("/products/" + this.productId + "/questions")
           .contentType(MediaType.APPLICATION_JSON)
-          .content(this.gson.toJson(new QuestionDto("title")))
+          .content(this.gson.toJson(new QuestionRequest("title")))
       )
       .andExpect(status().isForbidden())
       .andExpect(content().string(""))

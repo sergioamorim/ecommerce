@@ -22,19 +22,13 @@ public class ReviewRequest {
   @Length(max = 500)
   private final String description;
 
-  public ReviewRequest(
-    Integer rating,
-    String title,
-    String description
-  ) {
+  public ReviewRequest(Integer rating, String title, String description) {
     this.rating = rating;
     this.title = title;
     this.description = description;
   }
 
-  public Review toReview(
-    User user, Product product
-  ) {
+  public Review toReview(User user, Product product) {
     return new Review(
       this.rating,
       this.title,

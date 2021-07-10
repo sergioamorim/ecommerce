@@ -2,7 +2,7 @@ package br.com.zupacademy.sergio.ecommerce.controller;
 
 import br.com.zupacademy.sergio.ecommerce.model.Category;
 import br.com.zupacademy.sergio.ecommerce.model.Product;
-import br.com.zupacademy.sergio.ecommerce.model.ProductProperty;
+import br.com.zupacademy.sergio.ecommerce.model.Property;
 import br.com.zupacademy.sergio.ecommerce.model.User;
 import br.com.zupacademy.sergio.ecommerce.model.dto.EncodedPassword;
 import br.com.zupacademy.sergio.ecommerce.model.dto.ReviewRequest;
@@ -82,9 +82,9 @@ public class ReviewControllerTests {
         BigDecimal.ONE,
         1,
         Set.of(
-          new ProductProperty("product property a", "description"),
-          new ProductProperty("product property b", "description"),
-          new ProductProperty("product property c", "description")
+          new Property("product property a", "description"),
+          new Property("product property b", "description"),
+          new Property("product property c", "description")
         ),
         "d",
         categoryRepository.save(new Category("category name"))
@@ -119,7 +119,7 @@ public class ReviewControllerTests {
     @Autowired ReviewRepository reviewRepository
   ) throws Exception {
 
-    ReviewRequest reviewRequest = new ReviewRequest(
+    ReviewRequest reviewDto = new ReviewRequest(
       1, "title", "description"
     );
 
@@ -128,7 +128,7 @@ public class ReviewControllerTests {
         post("/products/" + this.productId + "/reviews")
           .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
-          .content(this.gson.toJson(reviewRequest))
+          .content(this.gson.toJson(reviewDto))
       )
       .andExpect(status().isOk())
       .andExpect(content().string(""))
@@ -140,7 +140,7 @@ public class ReviewControllerTests {
   @Test
   @DisplayName("Should return forbidden when the token is not sent")
   void shouldReturnForbiddenWhenTheTokenIsNotSent() throws Exception {
-    ReviewRequest reviewRequest = new ReviewRequest(
+    ReviewRequest reviewDto = new ReviewRequest(
       1, "title", "description"
     );
 
@@ -148,7 +148,7 @@ public class ReviewControllerTests {
       .perform(
         post("/products/" + this.productId + "/reviews")
           .contentType(MediaType.APPLICATION_JSON)
-          .content(this.gson.toJson(reviewRequest))
+          .content(this.gson.toJson(reviewDto))
       )
       .andExpect(status().isForbidden())
       .andExpect(content().string(""))
@@ -158,7 +158,7 @@ public class ReviewControllerTests {
   @Test
   @DisplayName("Should return bad request when the product id is invalid")
   void shouldReturnBadRequestWhenTheProductIdIsInvalid() throws Exception {
-    ReviewRequest reviewRequest = new ReviewRequest(
+    ReviewRequest reviewDto = new ReviewRequest(
       1, "title", "description"
     );
 
@@ -167,7 +167,7 @@ public class ReviewControllerTests {
         post("/products/999/reviews")
           .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
-          .content(this.gson.toJson(reviewRequest))
+          .content(this.gson.toJson(reviewDto))
       )
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.*", hasSize(1)))
@@ -188,7 +188,7 @@ public class ReviewControllerTests {
   void shouldReturnBadRequestWhenTheRatingIsNullBelowOneOrAbove5(
     Integer rating
   ) throws Exception {
-    ReviewRequest reviewRequest = new ReviewRequest(
+    ReviewRequest reviewDto = new ReviewRequest(
       rating, "title", "description"
     );
 
@@ -197,7 +197,7 @@ public class ReviewControllerTests {
         post("/products/" + this.productId + "/reviews")
           .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
-          .content(this.gson.toJson(reviewRequest))
+          .content(this.gson.toJson(reviewDto))
       )
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.*", hasSize(1)))
@@ -219,7 +219,7 @@ public class ReviewControllerTests {
     String title
   ) throws Exception {
 
-    ReviewRequest reviewRequest = new ReviewRequest(
+    ReviewRequest reviewDto = new ReviewRequest(
       1, title, "description"
     );
 
@@ -228,7 +228,7 @@ public class ReviewControllerTests {
         post("/products/" + this.productId + "/reviews")
           .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
-          .content(this.gson.toJson(reviewRequest))
+          .content(this.gson.toJson(reviewDto))
       )
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.*", hasSize(1)))
@@ -249,7 +249,7 @@ public class ReviewControllerTests {
     String description
   ) throws Exception {
 
-    ReviewRequest reviewRequest = new ReviewRequest(
+    ReviewRequest reviewDto = new ReviewRequest(
       1, "title", description
     );
 
@@ -258,7 +258,7 @@ public class ReviewControllerTests {
         post("/products/" + this.productId + "/reviews")
           .header(this.jwtConfiguration.getHeader(), this.tokenWithPrefix)
           .contentType(MediaType.APPLICATION_JSON)
-          .content(this.gson.toJson(reviewRequest))
+          .content(this.gson.toJson(reviewDto))
       )
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.*", hasSize(1)))

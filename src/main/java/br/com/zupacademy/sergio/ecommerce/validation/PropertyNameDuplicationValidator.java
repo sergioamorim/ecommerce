@@ -4,7 +4,7 @@ import br.com.zupacademy.sergio.ecommerce.model.dto.ProductRequest;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-public class ProductPropertyNameDuplicationValidator implements Validator {
+public class PropertyNameDuplicationValidator implements Validator {
   @Override
   public boolean supports(Class<?> aClass) {
     return aClass.isAssignableFrom(ProductRequest.class);
@@ -15,8 +15,8 @@ public class ProductPropertyNameDuplicationValidator implements Validator {
 
     if (((ProductRequest) object).hasPropertiesWithTheSameName()) {
       errors.rejectValue(
-        "productProperties",
-        "ProductPropertyWithDuplicateName",
+        "properties",
+        "PropertyNameDuplication",
         "must have different names"
       );
     }

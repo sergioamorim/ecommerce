@@ -1,10 +1,10 @@
 package br.com.zupacademy.sergio.ecommerce.model.dto;
 
-import br.com.zupacademy.sergio.ecommerce.model.ProductProperty;
+import br.com.zupacademy.sergio.ecommerce.model.Property;
 
 import javax.validation.constraints.NotBlank;
 
-public class ProductPropertyDto {
+public class PropertyDto {
 
   @NotBlank
   private final String name;
@@ -12,18 +12,18 @@ public class ProductPropertyDto {
   @NotBlank
   private final String description;
 
-  public ProductPropertyDto(String name, String description) {
+  public PropertyDto(String name, String description) {
     this.name = name;
     this.description = description;
   }
 
-  public ProductPropertyDto(ProductProperty productProperty) {
-    this.name = productProperty.getName();
-    this.description = productProperty.getDescription();
+  public PropertyDto(Property property) {
+    this.name = property.getName();
+    this.description = property.getDescription();
   }
 
-  public ProductProperty toProductProperty() {
-    return new ProductProperty(this.name, this.description);
+  public Property toProperty() {
+    return new Property(this.name, this.description);
   }
 
   public String getName() {
@@ -36,10 +36,10 @@ public class ProductPropertyDto {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof ProductPropertyDto)) return false;
+    if (!(o instanceof PropertyDto)) return false;
     if (this == o) return true;
 
-    ProductPropertyDto that = (ProductPropertyDto) o;
+    PropertyDto that = (PropertyDto) o;
 
     return this.getName().equals(that.getName());
   }

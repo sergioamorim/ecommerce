@@ -31,7 +31,7 @@ public class Product {
   private Integer availableQuantity;
 
   @OneToMany(cascade = ALL, fetch = EAGER)
-  private Set<ProductProperty> productProperties;
+  private Collection<Property> properties;
 
   @OneToMany(cascade = ALL, fetch = EAGER, mappedBy = "product")
   private Set<Image> images;
@@ -51,7 +51,7 @@ public class Product {
     String name,
     BigDecimal price,
     Integer availableQuantity,
-    Set<ProductProperty> productProperties,
+    Collection<Property> properties,
     String description,
     Category category
   ) {
@@ -59,7 +59,7 @@ public class Product {
     this.name = name;
     this.price = price;
     this.availableQuantity = availableQuantity;
-    this.productProperties = productProperties;
+    this.properties = properties;
     this.description = description;
     this.category = category;
   }
@@ -92,8 +92,8 @@ public class Product {
     return this.availableQuantity;
   }
 
-  public Collection<ProductProperty> getProductProperties() {
-    return this.productProperties;
+  public Collection<Property> getProperties() {
+    return this.properties;
   }
 
   public Collection<Image> getImages() {

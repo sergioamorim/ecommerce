@@ -4,7 +4,7 @@ import br.com.zupacademy.sergio.ecommerce.model.Category;
 import br.com.zupacademy.sergio.ecommerce.model.Product;
 import br.com.zupacademy.sergio.ecommerce.model.User;
 import br.com.zupacademy.sergio.ecommerce.repository.CategoryRepository;
-import br.com.zupacademy.sergio.ecommerce.repository.ProductPropertyRepository;
+import br.com.zupacademy.sergio.ecommerce.repository.PropertyRepository;
 import br.com.zupacademy.sergio.ecommerce.validation.ForeignKeyExists;
 import org.hibernate.validator.constraints.Length;
 
@@ -29,7 +29,7 @@ public class ProductRequest {
   private final Integer availableQuantity;
 
   @Size(min = 3)
-  private final Collection<@Valid ProductPropertyDto> productProperties;
+  private final Collection<@Valid PropertyDto> properties;
 
   @NotBlank
   @Length(max = 1000)
@@ -42,14 +42,14 @@ public class ProductRequest {
     String name,
     BigDecimal price,
     Integer availableQuantity,
-    Collection<ProductPropertyDto> productProperties,
+    Collection<PropertyDto> properties,
     String description,
     Long categoryId
   ) {
     this.name = name;
     this.price = price;
     this.availableQuantity = availableQuantity;
-    this.productProperties = productProperties;
+    this.properties = properties;
     this.description = description;
     this.categoryId = categoryId;
   }
@@ -66,8 +66,8 @@ public class ProductRequest {
     return this.availableQuantity;
   }
 
-  public Collection<ProductPropertyDto> getProductProperties() {
-    return this.productProperties;
+  public Collection<PropertyDto> getProperties() {
+    return this.properties;
   }
 
   public String getDescription() {
@@ -79,7 +79,7 @@ public class ProductRequest {
   }
 
   public Product toProduct(
-    ProductPropertyRepository productPropertyRepository,
+    PropertyRepository propertyRepository,
     CategoryRepository categoryRepository,
     User user
   ) {
@@ -88,13 +88,9 @@ public class ProductRequest {
       this.name,
       this.price,
       this.availableQuantity,
-      this.productProperties.stream()
-        .map(
-          productPropertyDto -> productPropertyRepository.save(
-            productPropertyDto.toProductProperty()
-          )
-        )
-        .collect(Collectors.toSet()),
+      this.properties.stream()
+        .map(PropertyDto::toProperty)
+        .collect(Collectors.toList()),
       this.description,
       categoryRepository.findById(this.categoryId).orElseThrow()  // ForeignKeyExists validation shall guarantee this exists
     );
@@ -102,8 +98,8 @@ public class ProductRequest {
 
   public boolean hasPropertiesWithTheSameName() {
     return (
-      new HashSet<>(this.productProperties).size()
-        != this.productProperties.size()
+      new HashSet<>(this.properties).size()
+        != this.properties.size()
     );
   }
 }

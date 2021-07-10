@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 import static com.jayway.jsonpath.JsonPath.parse;
 import static org.hamcrest.Matchers.hasSize;
@@ -85,10 +85,10 @@ public class ImageControllerTests {
         "product name",
         BigDecimal.ONE,
         1,
-        Set.of(
-          new ProductProperty("product property a", "description"),
-          new ProductProperty("product property b", "description"),
-          new ProductProperty("product property c", "description")
+        List.of(
+          new Property("product property a", "description"),
+          new Property("product property b", "description"),
+          new Property("product property c", "description")
         ),
         "d",
         categoryRepository.save(new Category("category name"))
@@ -148,7 +148,7 @@ public class ImageControllerTests {
     assertNotEquals(firstImageUrl, secondImageUrl);
 
     Collection<Image> productImages = this.productRepository
-      .findById(productId).get().getImages();
+      .findById(productId).orElseThrow().getImages();
 
     assertEquals(2, productImages.size());
 

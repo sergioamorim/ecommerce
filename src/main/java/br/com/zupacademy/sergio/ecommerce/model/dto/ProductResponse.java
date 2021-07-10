@@ -14,7 +14,7 @@ public class ProductResponse {
   private final String name;
   private final BigDecimal price;
   private final Integer availableQuantity;
-  private final Collection<ProductPropertyDto> productProperties;
+  private final Collection<PropertyDto> properties;
   private final String description;
   private final Long categoryId;
   private final ZonedDateTime creation;
@@ -26,9 +26,9 @@ public class ProductResponse {
     this.name = product.getName();
     this.price = product.getPrice();
     this.availableQuantity = product.getAvailableQuantity();
-    this.productProperties = product.getProductProperties()
+    this.properties = product.getProperties()
       .stream()
-      .map(ProductPropertyDto::new)
+      .map(PropertyDto::new)
       .collect(Collectors.toSet());
     this.description = product.getDescription();
     this.categoryId = product.getCategoryId();
@@ -56,8 +56,8 @@ public class ProductResponse {
     return this.availableQuantity;
   }
 
-  public Collection<ProductPropertyDto> getProductProperties() {
-    return this.productProperties;
+  public Collection<PropertyDto> getProperties() {
+    return this.properties;
   }
 
   public String getDescription() {

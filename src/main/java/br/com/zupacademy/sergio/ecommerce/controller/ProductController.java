@@ -4,9 +4,9 @@ import br.com.zupacademy.sergio.ecommerce.model.User;
 import br.com.zupacademy.sergio.ecommerce.model.dto.ProductRequest;
 import br.com.zupacademy.sergio.ecommerce.model.dto.ProductResponse;
 import br.com.zupacademy.sergio.ecommerce.repository.CategoryRepository;
-import br.com.zupacademy.sergio.ecommerce.repository.ProductPropertyRepository;
 import br.com.zupacademy.sergio.ecommerce.repository.ProductRepository;
-import br.com.zupacademy.sergio.ecommerce.validation.ProductPropertyNameDuplicationValidator;
+import br.com.zupacademy.sergio.ecommerce.repository.PropertyRepository;
+import br.com.zupacademy.sergio.ecommerce.validation.PropertyNameDuplicationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,35 +24,35 @@ import javax.validation.constraints.NotNull;
 @RestController
 public class ProductController {
   private final ProductRepository productRepository;
-  private final ProductPropertyRepository productPropertyRepository;
+  private final PropertyRepository propertyRepository;
   private final CategoryRepository categoryRepository;
 
   @Autowired
   public ProductController(
     ProductRepository productRepository,
-    ProductPropertyRepository productPropertyRepository,
+    PropertyRepository propertyRepository,
     CategoryRepository categoryRepository
   ) {
 
     this.productRepository = productRepository;
-    this.productPropertyRepository = productPropertyRepository;
+    this.propertyRepository = propertyRepository;
     this.categoryRepository = categoryRepository;
 
   }
 
   @InitBinder
   private void initBinder(WebDataBinder webDataBinder) {
-    webDataBinder.addValidators(new ProductPropertyNameDuplicationValidator());
+    webDataBinder.addValidators(new PropertyNameDuplicationValidator());
   }
 
-  @PostMapping(value = "/products")
+  @PostMapping("/products")
   public ResponseEntity<ProductResponse> createProduct(
     @RequestBody @Valid ProductRequest productRequest,
     @AuthenticationPrincipal @NotNull User user
   ) {
     return ResponseEntity.ok(new ProductResponse(productRepository.save(
       productRequest.toProduct(
-        this.productPropertyRepository,
+        this.propertyRepository,
         this.categoryRepository,
         user
       )

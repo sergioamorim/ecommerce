@@ -4,8 +4,8 @@ import br.com.zupacademy.sergio.ecommerce.model.Category;
 import br.com.zupacademy.sergio.ecommerce.model.Product;
 import br.com.zupacademy.sergio.ecommerce.model.User;
 import br.com.zupacademy.sergio.ecommerce.model.dto.EncodedPassword;
-import br.com.zupacademy.sergio.ecommerce.model.dto.ProductPropertyDto;
 import br.com.zupacademy.sergio.ecommerce.model.dto.ProductRequest;
+import br.com.zupacademy.sergio.ecommerce.model.dto.PropertyDto;
 import br.com.zupacademy.sergio.ecommerce.repository.CategoryRepository;
 import br.com.zupacademy.sergio.ecommerce.repository.ProductRepository;
 import br.com.zupacademy.sergio.ecommerce.repository.UserRepository;
@@ -102,8 +102,8 @@ public class ProductControllerTests {
   }
 
   @Test
-  @DisplayName("Should create a product and with product properties when the request is valid")
-  void shouldCreateAProductAndWithProductPropertiesWhenTheRequestIsValid(
+  @DisplayName("Should create a product with properties when the request is valid")
+  void shouldCreateAProductWithPropertiesWhenTheRequestIsValid(
   ) throws Exception {
 
     ProductRequest productRequest = this.productRequestBuilder.build();
@@ -126,8 +126,8 @@ public class ProductControllerTests {
           .value(productRequest.getAvailableQuantity())
       )
       .andExpect(jsonPath(
-        "productProperties",
-        hasToString(this.gson.toJson(productRequest.getProductProperties()))
+        "properties",
+        hasToString(this.gson.toJson(productRequest.getProperties()))
       ))
       .andExpect(
         jsonPath("description").value(productRequest.getDescription())
@@ -159,8 +159,8 @@ public class ProductControllerTests {
     );
 
     assertEquals(
-      productRequest.getProductProperties().size(),
-      product.getProductProperties().size()
+      productRequest.getProperties().size(),
+      product.getProperties().size()
     );
 
     assertEquals(productRequest.getDescription(), product.getDescription());
@@ -169,12 +169,12 @@ public class ProductControllerTests {
   }
 
   @Test
-  @DisplayName("Should return bad request when the product has less then three product properties")
-  void shouldReturnBadRequestWhenTheProductHasLessThenThreeProductProperties(
+  @DisplayName("Should return bad request when the product has less then three properties")
+  void shouldReturnBadRequestWhenTheProductHasLessThenThreeProperties(
   ) throws Exception {
 
     ProductRequest productRequest = this.productRequestBuilder
-      .withNumberOfProductProperties(2).build();
+      .withQuantityOfProperties(2).build();
 
     this.mockMvc
       .perform(
@@ -188,7 +188,7 @@ public class ProductControllerTests {
       .andExpect(jsonPath("fieldErrors").isArray())
       .andExpect(jsonPath("fieldErrors.*", hasSize(1)))
       .andExpect(jsonPath("fieldErrors[0].*", hasSize(2)))
-      .andExpect(jsonPath("fieldErrors[0].name").value("productProperties"))
+      .andExpect(jsonPath("fieldErrors[0].name").value("properties"))
       .andExpect(jsonPath("fieldErrors[0].message").isString())
       .andExpect(jsonPath("fieldErrors[0].message").isNotEmpty());
 
@@ -375,29 +375,29 @@ public class ProductControllerTests {
   @ParameterizedTest
   @NullAndEmptySource
   @ValueSource(strings = {" "})
-  @DisplayName("Should return bad request when one product property name is null, empty or blank")
-  void shouldReturnBadRequestWhenOneProductPropertyNameIsNullEmptyOrBlank(
+  @DisplayName("Should return bad request when one property name is null, empty or blank")
+  void shouldReturnBadRequestWhenOnePropertyNameIsNullEmptyOrBlank(
     String propertyName
   ) throws Exception {
 
-    ProductPropertyDto invalidProductPropertyDto = new ProductPropertyDto(
+    PropertyDto invalidPropertyDto = new PropertyDto(
       propertyName, "property description"
     );
 
-    ProductPropertyDto productPropertyDtoA = new ProductPropertyDto(
+    PropertyDto propertyDtoA = new PropertyDto(
       "property name A", "property description"
     );
 
-    ProductPropertyDto productPropertyDtoB = new ProductPropertyDto(
+    PropertyDto propertyDtoB = new PropertyDto(
       "property name B", "property description"
     );
 
     ProductRequest productRequest = this.productRequestBuilder
-      .withProductProperties(
+      .withProperties(
         List.of(
-          invalidProductPropertyDto,
-          productPropertyDtoA,
-          productPropertyDtoB
+          invalidPropertyDto,
+          propertyDtoA,
+          propertyDtoB
         )
       ).build();
 
@@ -416,7 +416,7 @@ public class ProductControllerTests {
       .andExpect(
         jsonPath(
           "fieldErrors[0].name",
-          matchesPattern("productProperties\\[[0-9]+]\\.name"
+          matchesPattern("properties\\[[0-9]+]\\.name"
           )
         )
       )
@@ -427,28 +427,28 @@ public class ProductControllerTests {
   @ParameterizedTest
   @NullAndEmptySource
   @ValueSource(strings = {" "})
-  @DisplayName("Should return bad request when one product property description is null, empty or blank")
-  void shouldReturnBadRequestWhenOneProductPropertyDescriptionIsNullEmptyOrBlank(
+  @DisplayName("Should return bad request when one property description is null, empty or blank")
+  void shouldReturnBadRequestWhenOnePropertyDescriptionIsNullEmptyOrBlank(
     String propertyDescription
   ) throws Exception {
-    ProductPropertyDto invalidProductPropertyDto = new ProductPropertyDto(
+    PropertyDto invalidPropertyDto = new PropertyDto(
       "property name", propertyDescription
     );
 
-    ProductPropertyDto productPropertyDtoA = new ProductPropertyDto(
+    PropertyDto propertyDtoA = new PropertyDto(
       "property name A", "property description"
     );
 
-    ProductPropertyDto productPropertyDtoB = new ProductPropertyDto(
+    PropertyDto propertyDtoB = new PropertyDto(
       "property name B", "property description"
     );
 
     ProductRequest productRequest = this.productRequestBuilder
-      .withProductProperties(
+      .withProperties(
         List.of(
-          invalidProductPropertyDto,
-          productPropertyDtoA,
-          productPropertyDtoB
+          invalidPropertyDto,
+          propertyDtoA,
+          propertyDtoB
         )
       )
       .build();
@@ -468,32 +468,32 @@ public class ProductControllerTests {
       .andExpect(
         jsonPath(
           "fieldErrors[0].name",
-          matchesPattern("productProperties\\[[0-9]+]\\.description"))
+          matchesPattern("properties\\[[0-9]+]\\.description"))
       )
       .andExpect(jsonPath("fieldErrors[0].message").isString())
       .andExpect(jsonPath("fieldErrors[0].message").isNotEmpty());
   }
 
   @Test
-  @DisplayName("Should return bad request when two product properties have the same name")
-  void shouldReturnBadRequestWhenTwoProductPropertiesHaveTheSameName(
+  @DisplayName("Should return bad request when two properties have the same name")
+  void shouldReturnBadRequestWhenTwoPropertiesHaveTheSameName(
   ) throws Exception {
 
-    ProductPropertyDto productPropertyDtoA = new ProductPropertyDto(
+    PropertyDto propertyDtoA = new PropertyDto(
       "property name", "property a description"
     );
 
-    ProductPropertyDto productPropertyDtoB = new ProductPropertyDto(
+    PropertyDto propertyDtoB = new PropertyDto(
       "property name", "property b description"
     );
 
-    ProductPropertyDto productPropertyDtoC = new ProductPropertyDto(
+    PropertyDto propertyDtoC = new PropertyDto(
       "property c name", "property c description"
     );
 
     ProductRequest productRequest = this.productRequestBuilder
-      .withProductProperties(
-        List.of(productPropertyDtoA, productPropertyDtoB, productPropertyDtoC)
+      .withProperties(
+        List.of(propertyDtoA, propertyDtoB, propertyDtoC)
       )
       .build();
 
@@ -511,7 +511,7 @@ public class ProductControllerTests {
       .andExpect(jsonPath("fieldErrors[0].*", hasSize(2)))
       .andExpect(
         jsonPath(
-          "fieldErrors[0].name").value("productProperties")
+          "fieldErrors[0].name").value("properties")
       )
       .andExpect(jsonPath("fieldErrors[0].message").isString())
       .andExpect(jsonPath("fieldErrors[0].message").isNotEmpty());
@@ -539,13 +539,13 @@ public class ProductControllerTests {
     private String name = "product name";
     private BigDecimal price = BigDecimal.valueOf(1.2);
     private Integer availableQuantity = 2;
-    private Collection<ProductPropertyDto> productProperties;
+    private Collection<PropertyDto> properties;
     private String description = "product description";
     private Long categoryId;
 
     public ProductRequestBuilder(Long validCategoryId) {
       this.categoryId = validCategoryId;
-      this.productProperties = this.setWithNProductProperties(3);
+      this.properties = this.setWithNProperties(3);
     }
 
     public ProductRequest build() {
@@ -553,7 +553,7 @@ public class ProductControllerTests {
         this.name,
         this.price,
         this.availableQuantity,
-        this.productProperties,
+        this.properties,
         this.description,
         this.categoryId
       );
@@ -582,10 +582,10 @@ public class ProductControllerTests {
       return this;
     }
 
-    public ProductRequestBuilder withProductProperties(
-      List<ProductPropertyDto> productProperties
+    public ProductRequestBuilder withProperties(
+      List<PropertyDto> properties
     ) {
-      this.productProperties = productProperties;
+      this.properties = properties;
       return this;
     }
 
@@ -599,33 +599,31 @@ public class ProductControllerTests {
       return this;
     }
 
-    public ProductRequestBuilder withNumberOfProductProperties(
-      int quantityOfProductProperties
+    public ProductRequestBuilder withQuantityOfProperties(
+      int quantityOfProperties
     ) {
 
-      this.productProperties = this.setWithNProductProperties(
-        quantityOfProductProperties
+      this.properties = this.setWithNProperties(
+        quantityOfProperties
       );
 
       return this;
     }
 
-    private Collection<ProductPropertyDto> setWithNProductProperties(
+    private Collection<PropertyDto> setWithNProperties(
       int quantityOfProperties
     ) {
-      Collection<ProductPropertyDto> productProperties = new HashSet<>();
+      Collection<PropertyDto> properties = new HashSet<>();
 
       for (int i = 0; i < quantityOfProperties; i++) {
 
-        productProperties.add(
-          new ProductPropertyDto(
-            "property name " + i, "property description"
-          )
+        properties.add(
+          new PropertyDto("property name " + i, "property description")
         );
 
       }
 
-      return productProperties;
+      return properties;
     }
 
   }
