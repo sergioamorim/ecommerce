@@ -5,7 +5,6 @@ import br.com.zupacademy.sergio.ecommerce.model.Product;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class ProductResponse {
 
@@ -26,10 +25,7 @@ public class ProductResponse {
     this.name = product.getName();
     this.price = product.getPrice();
     this.availableQuantity = product.getAvailableQuantity();
-    this.properties = product.getProperties()
-      .stream()
-      .map(PropertyDto::new)
-      .collect(Collectors.toSet());
+    this.properties = product.mapProperties(PropertyDto::new);
     this.description = product.getDescription();
     this.categoryId = product.getCategoryId();
     this.creation = product.getCreation();

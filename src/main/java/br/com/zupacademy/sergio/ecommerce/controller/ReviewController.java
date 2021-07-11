@@ -35,10 +35,10 @@ public class ReviewController {
   @PostMapping("/products/{productId}/reviews")
   public ResponseEntity<?> createReview(
     @PathVariable @ForeignKeyExists(domainClass = Product.class) Long productId,
-    @RequestBody @Valid ReviewRequest reviewRequest,
+    @RequestBody @Valid ReviewRequest reviewDto,
     @AuthenticationPrincipal @NotNull User user
   ) {
-    this.reviewRepository.save(reviewRequest.toReview(
+    this.reviewRepository.save(reviewDto.toReview(
       user, this.productRepository.findById(productId).orElseThrow()  // ForeignKeyExists validation shall guarantee this exists
     ));
     return ResponseEntity.ok().build();

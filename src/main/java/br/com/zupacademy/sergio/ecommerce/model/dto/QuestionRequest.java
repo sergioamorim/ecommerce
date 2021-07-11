@@ -7,25 +7,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 import javax.validation.constraints.NotBlank;
 
-public class QuestionDto {
+import static com.fasterxml.jackson.annotation.JsonCreator.Mode.PROPERTIES;
+
+public class QuestionRequest {
 
   @NotBlank
   private final String title;
 
-  @JsonCreator
-  public QuestionDto(Question question) {
-    this.title = question.getTitle();
-  }
-
-  public QuestionDto(String title) {
+  @JsonCreator(mode = PROPERTIES)
+  public QuestionRequest(String title) {
     this.title = title;
   }
 
   public Question toQuestion(Product product, User user) {
     return new Question(this.title, product, user);
-  }
-
-  public String getTitle() {
-    return this.title;
   }
 }

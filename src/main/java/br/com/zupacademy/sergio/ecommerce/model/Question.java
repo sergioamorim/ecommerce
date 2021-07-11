@@ -49,4 +49,8 @@ public class Question {
   public String getProductName() {
     return this.product.getName();
   }
+
+  public ZonedDateTime getCreation() {
+    return this.creation;
+  }
 }

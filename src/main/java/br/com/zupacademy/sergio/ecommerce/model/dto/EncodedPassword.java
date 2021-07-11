@@ -1,13 +1,13 @@
 package br.com.zupacademy.sergio.ecommerce.model.dto;
 
 public class EncodedPassword {
-  private final String clearPassword;
+  private final String encodedPassword;
 
   public EncodedPassword(String encodedPassword) {
-    this.clearPassword = encodedPassword;
+    this.encodedPassword = encodedPassword;
   }
 
   public String get() {
-    return this.clearPassword;
+    return this.encodedPassword;
   }
 }

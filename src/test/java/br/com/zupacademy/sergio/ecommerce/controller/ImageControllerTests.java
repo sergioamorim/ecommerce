@@ -1,7 +1,11 @@
 package br.com.zupacademy.sergio.ecommerce.controller;
 
-import br.com.zupacademy.sergio.ecommerce.model.*;
+import br.com.zupacademy.sergio.ecommerce.model.Category;
+import br.com.zupacademy.sergio.ecommerce.model.Product;
+import br.com.zupacademy.sergio.ecommerce.model.Property;
+import br.com.zupacademy.sergio.ecommerce.model.User;
 import br.com.zupacademy.sergio.ecommerce.model.dto.EncodedPassword;
+import br.com.zupacademy.sergio.ecommerce.model.dto.ImageDto;
 import br.com.zupacademy.sergio.ecommerce.repository.CategoryRepository;
 import br.com.zupacademy.sergio.ecommerce.repository.ImageRepository;
 import br.com.zupacademy.sergio.ecommerce.repository.ProductRepository;
@@ -147,8 +151,8 @@ public class ImageControllerTests {
 
     assertNotEquals(firstImageUrl, secondImageUrl);
 
-    Collection<Image> productImages = this.productRepository
-      .findById(productId).orElseThrow().getImages();
+    Collection<ImageDto> productImages = this.productRepository
+      .findById(productId).orElseThrow().mapImages(ImageDto::new);
 
     assertEquals(2, productImages.size());
 

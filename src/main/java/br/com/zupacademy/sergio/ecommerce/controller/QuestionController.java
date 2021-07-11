@@ -3,7 +3,8 @@ package br.com.zupacademy.sergio.ecommerce.controller;
 import br.com.zupacademy.sergio.ecommerce.model.Product;
 import br.com.zupacademy.sergio.ecommerce.model.Question;
 import br.com.zupacademy.sergio.ecommerce.model.User;
-import br.com.zupacademy.sergio.ecommerce.model.dto.QuestionDto;
+import br.com.zupacademy.sergio.ecommerce.model.dto.QuestionRequest;
+import br.com.zupacademy.sergio.ecommerce.model.dto.QuestionResponse;
 import br.com.zupacademy.sergio.ecommerce.repository.ProductRepository;
 import br.com.zupacademy.sergio.ecommerce.repository.QuestionRepository;
 import br.com.zupacademy.sergio.ecommerce.validation.ForeignKeyExists;
@@ -37,23 +38,22 @@ public class QuestionController {
   }
 
   @PostMapping("/products/{productId}/questions")
-  public ResponseEntity<QuestionDto> createQuestion(
+  public ResponseEntity<QuestionResponse> createQuestion(
     @PathVariable @ForeignKeyExists(domainClass = Product.class) Long productId,
-    @RequestBody @Valid QuestionDto questionDto,
+    @RequestBody @Valid QuestionRequest questionRequest,
     @AuthenticationPrincipal User user
   ) throws TemplateException, IOException {
-
-    return ResponseEntity.ok(new QuestionDto(questionOfEmailSent(
-      this.persistedQuestion(questionDto, productId, user)
+    return ResponseEntity.ok(new QuestionResponse(questionOfEmailSent(
+      this.persistedQuestion(questionRequest, productId, user)
     )));
 
   }
 
   private Question persistedQuestion(
-    QuestionDto questionDto, Long productId, User user
+    QuestionRequest questionRequest, Long productId, User user
   ) {
 
-    return this.questionRepository.save(questionDto.toQuestion(
+    return this.questionRepository.save(questionRequest.toQuestion(
       this.productRepository.findById(productId).orElseThrow(), user
     ));
 

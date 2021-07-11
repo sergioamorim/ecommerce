@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
@@ -92,12 +94,12 @@ public class Product {
     return this.availableQuantity;
   }
 
-  public Collection<Property> getProperties() {
-    return this.properties;
+  public <T> Collection<T> mapProperties(Function<Property, T> mapper) {
+    return this.properties.stream().map(mapper).collect(Collectors.toList());
   }
 
-  public Collection<Image> getImages() {
-    return this.images;
+  public <T> Collection<T> mapImages(Function<Image, T> mapper) {
+    return this.images.stream().map(mapper).collect(Collectors.toList());
   }
 
   public String getDescription() {

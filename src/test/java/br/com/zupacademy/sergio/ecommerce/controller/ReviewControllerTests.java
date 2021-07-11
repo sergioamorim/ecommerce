@@ -29,7 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -81,7 +81,7 @@ public class ReviewControllerTests {
         "product name",
         BigDecimal.ONE,
         1,
-        Set.of(
+        List.of(
           new Property("product property a", "description"),
           new Property("product property b", "description"),
           new Property("product property c", "description")

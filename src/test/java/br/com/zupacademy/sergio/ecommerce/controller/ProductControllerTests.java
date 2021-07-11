@@ -160,7 +160,7 @@ public class ProductControllerTests {
 
     assertEquals(
       productRequest.getProperties().size(),
-      product.getProperties().size()
+      product.mapProperties(PropertyDto::new).size()
     );
 
     assertEquals(productRequest.getDescription(), product.getDescription());

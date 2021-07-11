@@ -34,9 +34,4 @@ public class Property {
   public String getDescription() {
     return this.description;
   }
-
-  @Override
-  public int hashCode() {
-    return this.name.hashCode();
-  }
 }

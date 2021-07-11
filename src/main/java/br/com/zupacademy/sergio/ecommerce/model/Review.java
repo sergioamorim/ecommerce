@@ -41,4 +41,20 @@ public class Review {
   @Deprecated
   protected Review() {
   }
+
+  public String getUserEmail() {
+    return this.user.getEmail();
+  }
+
+  public Integer getRating() {
+    return this.rating;
+  }
+
+  public String getTitle() {
+    return this.title;
+  }
+
+  public String getDescription() {
+    return this.description;
+  }
 }
