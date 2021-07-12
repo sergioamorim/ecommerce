@@ -70,6 +70,14 @@ public class Product {
   protected Product() {
   }
 
+  public boolean removeQuantity(Integer quantityToRemove) {
+    if (this.availableQuantity >= quantityToRemove) {
+      this.availableQuantity -= quantityToRemove;
+      return true;
+    }
+    return false;
+  }
+
   public Long getId() {
     return this.id;
   }
